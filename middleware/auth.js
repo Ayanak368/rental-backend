@@ -9,7 +9,6 @@ export const protect = async (req, res, next) => {
             return res.status(401).json({ success: false, message: "Not authorized" });
         }
 
-        // Remove "Bearer " if present
         const token = authHeader.startsWith("Bearer ")
             ? authHeader.split(" ")[1]
             : authHeader;

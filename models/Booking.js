@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const { ObjectId } = mongoose.Schema.Types; 
 
 const bookingSchema = new mongoose.Schema({
-    Product:{type:ObjectId,ref:"Product",required:true},
+    product:{type:ObjectId,ref:"Product",required:true},
     user:{type:ObjectId,ref:"User",required:true},
     owner:{type:ObjectId,ref:"User",required:true},
     

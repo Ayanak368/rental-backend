@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Product from "../models/Product.js";
 
 // Generate JWT Token
 const generateToken = (userId) => {
@@ -28,7 +29,10 @@ export const registerUser = async (req, res) => {
         const user = await User.create({ name, email, password: hashedPassword });
         const token = generateToken(user._id.toString());
 
-        res.json({ success: true, token });
+        // send user data also (without password)
+        const { password: pwd, ...userWithoutPassword } = user._doc;
+
+        res.json({ success: true, token, user: userWithoutPassword });
     } catch (error) {
         console.log(error.message);
         res.json({ success: false, message: error.message });
@@ -51,7 +55,11 @@ export const loginUser = async (req, res) => {
         }
 
         const token = generateToken(user._id.toString());
-        res.json({ success: true, token });
+
+        // send user data also
+        const { password: pwd, ...userWithoutPassword } = user._doc;
+
+        res.json({ success: true, token, user: userWithoutPassword });
     } catch (error) {
         console.log(error.message);
         res.json({ success: false, message: error.message });
@@ -73,4 +81,15 @@ export const getUserData = async (req, res) => {
         console.log(error.message);
         res.json({ success: false, message: error.message });
     }
-};
+}
+
+// Get all products for the frontend
+export const getProducts = async (req, res) => {
+    try {
+        const products = await Product.find({ isAvailable: true });
+        res.json({ success: true, products });
+    } catch (error) {
+        console.log(error.message);
+        res.json({ success: false, message: error.message });
+    }
+}
